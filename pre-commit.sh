@@ -28,10 +28,6 @@ export SCRIPT_DIR="/action/"
 WORK_DIR="$(mktemp -d)/"
 export WORK_DIR
 
-# pre-commit mounts repos at /src
-# source: https://pre-commit.com/#docker
-git config --global --add safe.directory "/src"
-
 # get changed files
 git diff --name-only -z --diff-filter=db --cached > "${WORK_DIR}changed-files.txt"
 
