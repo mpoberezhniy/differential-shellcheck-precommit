@@ -1,7 +1,7 @@
 # ShellCheck pre-commit hook
 
 This is NOT an official [pre-commit hook](https://pre-commit.com/) for
-[differential-shellcheck](https://github.com/redhat-plumbers-in-action/differential-shellcheck,
+[differential-shellcheck](https://github.com/redhat-plumbers-in-action/differential-shellcheck),
 the static analysis tool for changed shell scripts.
 
 Activate by adding it to your `.pre-commit-config.yaml`:
