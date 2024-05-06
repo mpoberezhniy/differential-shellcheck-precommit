@@ -7,20 +7,24 @@ for opt
 do
   case "$opt" in
     -S=*|--severity=*)
-        INPUT_SEVERITY="${opt#*=}"
-        shift
-        ;;
+      INPUT_SEVERITY="${opt#*=}"
+      shift
+      ;;
     -S|--severity)
-        # shellcheck disable=SC2034
-        INPUT_SEVERITY="$2"
-        # shellcheck disable=SC2016
-        shift 2 || { echo 'option `--severity` requires an argument SEVERITY' >&2; exit 1; }
-        ;;
+      # shellcheck disable=SC2034
+      INPUT_SEVERITY="$2"
+      # shellcheck disable=SC2016
+      shift 2 || { echo 'option `--severity` requires an argument SEVERITY' >&2; exit 1; }
+      ;;
     -x|--external-sources)
-        # shellcheck disable=SC2034
-        INPUT_EXTERNAL_SOURCES=y
-        shift
-        ;;
+      # shellcheck disable=SC2034
+      INPUT_EXTERNAL_SOURCES=y
+      shift
+      ;;
+    --sarif)
+      INPUT_WRITE_SARIF=y
+      shift
+      ;;
   esac
 done
 
@@ -72,6 +76,17 @@ echo
 
 evaluate_and_print_defects
 exit_status=$?
+
+if is_true "${INPUT_WRITE_SARIF}"; then
+  shellcheck_version=$(get_shellcheck_version)
+  csgrep \
+    --strip-path-prefix './' \
+    --mode=sarif \
+    --set-scan-prop='tool:ShellCheck' \
+    --set-scan-prop="tool-version:${shellcheck_version}" \
+    --set-scan-prop='tool-url:https://www.shellcheck.net/wiki/' \
+    "${WORK_DIR}defects.log" > output.sarif
+fi
 
 summary
 
