@@ -31,7 +31,7 @@ done
 export SHELLCHECK_OPTS=("$@")
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")/"
-exort SCRIPT_DIR
+export SCRIPT_DIR
 . "${SCRIPT_DIR-}functions.sh"
 
 WORK_DIR="$(mktemp -d)/"
