@@ -9,7 +9,7 @@ Activate by adding it to your `.pre-commit-config.yaml`:
 ```sh
 repos:
 -   repo: https://github.com/mpoberezhniy/differential-shellcheck-precommit
-    rev: v5
+    rev: v5.2.0
     hooks:
     -   id: differential-shellcheck
 #       args: ["--severity=warning"]  # Optionally only show errors and warnings
