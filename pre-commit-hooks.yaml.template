@@ -1,0 +1,6 @@
+- id: differential-shellcheck
+  name: Differential ShellCheck $VERSION
+  description: Static analysis tool for changed shell scripts
+  language: docker_image
+  entry: $DOCKERHOST/$DOCKERHUB:$VERSION
+  pass_filenames: false
