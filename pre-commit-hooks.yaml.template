@@ -3,4 +3,4 @@
   description: Static analysis tool for changed shell scripts
   language: docker_image
   entry: $DOCKERHOST/$DOCKERHUB:$VERSION
-  types: [shell]
+  pass_filenames: false

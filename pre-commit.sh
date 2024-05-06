@@ -3,11 +3,12 @@
 
 INPUT_SEVERITY="style"
 
-for arg
+for opt
 do
-  case "$arg" in
+  case "$opt" in
     -S=*|--severity=*)
-        INPUT_SEVERITY="${arg#*=}"
+        INPUT_SEVERITY="${opt#*=}"
+        shift
         ;;
     -S|--severity)
         # shellcheck disable=SC2034
@@ -15,14 +16,18 @@ do
         # shellcheck disable=SC2016
         shift 2 || { echo 'option `--severity` requires an argument SEVERITY' >&2; exit 1; }
         ;;
-    *)
-      echo "Unknown option: %s" "$arg" >&2
-      exit 1
-      ;;
+    -x|--external-sources)
+        # shellcheck disable=SC2034
+        INPUT_EXTERNAL_SOURCES=y
+        shift
+        ;;
   esac
 done
 
-export SCRIPT_DIR="/action/"
+export SHELLCHECK_OPTS=("$@")
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")/"
+exort SCRIPT_DIR
 . "${SCRIPT_DIR-}functions.sh"
 
 WORK_DIR="$(mktemp -d)/"
@@ -50,11 +55,11 @@ echo
 
 exit_status=0
 
-execute_shellcheck "${only_changed_scripts[@]}" > "${WORK_DIR}head-shellcheck.err"
+execute_shellcheck "${SHELLCHECK_OPTS[@]}" "${only_changed_scripts[@]}" > "${WORK_DIR}head-shellcheck.err"
 
 git stash >/dev/null
 
-execute_shellcheck "${only_changed_scripts[@]}" > "${WORK_DIR}base-shellcheck.err"
+execute_shellcheck "${SHELLCHECK_OPTS[@]}" "${only_changed_scripts[@]}" > "${WORK_DIR}base-shellcheck.err"
 
 git stash apply --index >/dev/null
 

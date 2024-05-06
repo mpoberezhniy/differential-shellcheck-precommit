@@ -71,11 +71,33 @@ fetch_tags() {
     sort -V
 }
 
+is_supported_version() {
+  [[ $# -lt 1 ]] && return 1
+  local version
+  IFS=$'\n'
+  read -d '' -r -a version <<< "$(echo "$1" | grep -oP '[0-9]+')"
+  local min_supported_version=(5 2 0)
+
+  # iterate over the version to support sliding tags e.g. v5
+  for (( i = 0; i < ${#version[@]}; i++ ))
+  do
+    if (( 10#${version[i]} > 10#${min_supported_version[i]} )); then
+      return 0
+    elif (( 10#${version[i]} < 10#${min_supported_version[i]} )); then
+      return 1
+    fi
+  done
+  return 0
+}
+
 
 while read -r version
 do
-  export VERSION=$version
-  make_tag
+  if is_supported_version "$version"
+  then
+    export VERSION="$version"
+    make_tag
+  fi
 done < <(fetch_tags)
 
 
